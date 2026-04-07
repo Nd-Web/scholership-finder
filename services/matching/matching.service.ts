@@ -66,8 +66,8 @@ export class MatchingService {
    */
   async getConfig(userId: string): Promise<MatchingConfigResult> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       // Try to fetch user-specific config from profiles table
       const { data: profile, error } = await client
@@ -115,8 +115,8 @@ export class MatchingService {
     config: Partial<MatchingConfig>
   ): Promise<MatchingConfigResult> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       // Validate weights sum to 100
       if (config.defaultCriteria) {
@@ -199,8 +199,8 @@ export class MatchingService {
     }
   ): Promise<MatchingServiceResult> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       // Get user's matching config
       const configResult = await this.getConfig(userId);
@@ -269,8 +269,8 @@ export class MatchingService {
     weights?: Partial<MatchingWeights>
   ): Promise<{ success: boolean; data?: { score: number; explanation: any }; error?: string }> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       // Fetch the scholarship
       const { data: scholarship, error } = await client
@@ -306,8 +306,8 @@ export class MatchingService {
    */
   async resetConfig(userId: string): Promise<MatchingConfigResult> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       // Clear the matching_preferences field
       const { error } = await client
