@@ -25,7 +25,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(supabaseUrl, supabaseAnonKey, {
+  return createServerClient(supabaseUrl!, supabaseAnonKey!, {
     cookies: {
       getAll() {
         return cookieStore.getAll().map(c => ({ name: c.name, value: c.value }));
@@ -53,7 +53,7 @@ export async function createAdminClient() {
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const cookieStore = await cookies();
 
-  return createServerClient(supabaseUrl, supabaseServiceRoleKey, {
+  return createServerClient(supabaseUrl!, supabaseServiceRoleKey!, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
