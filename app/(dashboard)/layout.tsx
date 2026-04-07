@@ -164,7 +164,7 @@ export default function DashboardLayout({
       </a>
 
       {/* Mobile Header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 h-16">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-[60] bg-white border-b border-gray-200 h-16">
         <div className="flex items-center justify-between px-4 h-full">
           <Link href="/" className="flex items-center gap-2" aria-label="Scholarship Finder AI home">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center" aria-hidden="true">
@@ -196,7 +196,7 @@ export default function DashboardLayout({
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
-          className="md:hidden fixed inset-0 z-40 bg-black/50"
+          className="md:hidden fixed inset-0 z-50 bg-black/50"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -207,7 +207,7 @@ export default function DashboardLayout({
         <aside
           ref={sidebarRef}
           id="mobile-sidebar"
-          className="md:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200"
+          className="md:hidden fixed inset-y-0 left-0 z-[55] w-64 bg-white border-r border-gray-200"
           aria-label="Main navigation"
           role="navigation"
         >
