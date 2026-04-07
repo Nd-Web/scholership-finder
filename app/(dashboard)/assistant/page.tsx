@@ -210,39 +210,43 @@ export default function AssistantPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Scholarship Assistant</h1>
         <p className="text-gray-600 mt-1">Get personalized help finding and applying for scholarships</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-12rem)] min-h-[500px]">
         {/* Chat Messages */}
-        <div className="h-[500px] overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.map((message) => (
             <div
               key={message.id}
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                className={`max-w-[85%] sm:max-w-[80%] rounded-2xl px-4 py-3 ${
                   message.role === 'user'
                     ? 'bg-blue-600 text-white'
                     : 'bg-gray-100 text-gray-900'
                 }`}
               >
-                <div className="whitespace-pre-wrap text-sm">{message.content}</div>
+                <div className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</div>
 
                 {message.scholarships && message.scholarships.length > 0 && (
                   <div className="mt-3 space-y-2">
                     {message.scholarships.map((scholarship, idx) => (
                       <div
                         key={scholarship.id}
-                        className="bg-white bg-opacity-20 rounded-lg p-3 text-sm"
+                        className={`${
+                          message.role === 'user'
+                            ? 'bg-white bg-opacity-20'
+                            : 'bg-white border border-gray-200'
+                        } rounded-lg p-3 text-sm`}
                       >
-                        <div className="font-semibold">{scholarship.title}</div>
-                        <div className="text-xs opacity-80">{scholarship.provider}</div>
-                        <div className="text-xs opacity-80">{scholarship.amount}</div>
+                        <div className={`font-semibold ${message.role === 'user' ? 'text-white' : 'text-gray-900'}`}>{scholarship.title}</div>
+                        <div className={`text-xs ${message.role === 'user' ? 'text-white text-opacity-80' : 'text-gray-600'}`}>{scholarship.provider}</div>
+                        <div className={`text-xs ${message.role === 'user' ? 'text-white text-opacity-80' : 'text-gray-600'}`}>{scholarship.amount}</div>
                       </div>
                     ))}
                   </div>
@@ -275,20 +279,20 @@ export default function AssistantPage() {
         </div>
 
         {/* Input Form */}
-        <form onSubmit={handleSubmit} className="border-t border-gray-200 p-4">
-          <div className="flex gap-3">
+        <form onSubmit={handleSubmit} className="border-t border-gray-200 p-4 bg-white">
+          <div className="flex gap-2 sm:gap-3">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about scholarships, eligibility, or application tips..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 placeholder-gray-400"
+              className="flex-1 px-3 sm:px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 placeholder-gray-400 min-w-0"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+              className="px-4 sm:px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium whitespace-nowrap"
             >
               Send
             </button>
@@ -300,25 +304,25 @@ export default function AssistantPage() {
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           onClick={() => setInput('Find scholarships for me')}
-          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-sm text-gray-700 hover:bg-gray-50 transition"
+          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap"
         >
           🔍 Find scholarships
         </button>
         <button
           onClick={() => setInput('How do I check my eligibility?')}
-          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-sm text-gray-700 hover:bg-gray-50 transition"
+          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap"
         >
           ✓ Check eligibility
         </button>
         <button
           onClick={() => setInput('Give me application tips')}
-          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-sm text-gray-700 hover:bg-gray-50 transition"
+          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap"
         >
           💡 Application tips
         </button>
         <button
           onClick={clearHistory}
-          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-sm text-gray-700 hover:bg-gray-50 transition"
+          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap"
         >
           🗑️ Clear chat
         </button>

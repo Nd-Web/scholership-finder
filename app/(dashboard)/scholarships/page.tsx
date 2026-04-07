@@ -60,7 +60,7 @@ export default function ScholarshipsPage() {
     fetchScholarships();
   }, [page, filters]);
 
-  const handleFilterChange = (key: keyof Filters, value: string) => {
+  const handleFilterChange = (key: keyof Filters, value: string | boolean) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setPage(1);
   };
