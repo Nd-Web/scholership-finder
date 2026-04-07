@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
           updated_at: user.updated_at,
           last_sign_in_at: user.last_sign_in_at,
         },
-        session: session ? {
+        session: session && session.expires_at ? {
           expiresAt: new Date(session.expires_at * 1000).toISOString(),
           expires_in: session.expires_in,
           token_type: session.token_type,
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
         session: {
           accessToken: session.access_token,
           refreshToken: session.refresh_token,
-          expiresAt: new Date(session.expires_at * 1000).toISOString(),
+          expiresAt: session.expires_at ? new Date(session.expires_at * 1000).toISOString() : undefined,
           expires_in: session.expires_in,
           token_type: session.token_type,
         },
