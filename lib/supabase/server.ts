@@ -8,24 +8,24 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    'Missing Supabase environment variables. ' +
-    'Check .env.local and ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set.'
-  );
-}
-
 /**
  * Creates a server-side Supabase client with cookie handling.
  * Use this in API routes and Server Components when you need auth context.
  */
 export async function createClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      'Missing Supabase environment variables. ' +
+      'Check your environment configuration and ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set.'
+    );
+  }
+
   const cookieStore = await cookies();
 
-  return createServerClient(supabaseUrl!, supabaseAnonKey!, {
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll().map(c => ({ name: c.name, value: c.value }));
@@ -50,10 +50,19 @@ export async function createClient() {
  * WARNING: Never expose this client to the client-side.
  */
 export async function createAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    throw new Error(
+      'Missing Supabase environment variables for admin client. ' +
+      'Ensure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set.'
+    );
+  }
+
   const cookieStore = await cookies();
 
-  return createServerClient(supabaseUrl!, supabaseServiceRoleKey!, {
+  return createServerClient(supabaseUrl, supabaseServiceRoleKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
