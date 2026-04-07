@@ -158,13 +158,13 @@ export default function DashboardLayout({
       {/* Skip to main content link for keyboard users */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:outline-none"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:outline-none"
       >
         Skip to main content
       </a>
 
-      {/* Mobile Header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-[60] bg-white border-b border-gray-200 h-16">
+      {/* Mobile Header - Only visible on mobile */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 h-16">
         <div className="flex items-center justify-between px-4 h-full">
           <Link href="/" className="flex items-center gap-2" aria-label="Scholarship Finder AI home">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center" aria-hidden="true">
@@ -180,34 +180,32 @@ export default function DashboardLayout({
             aria-expanded={sidebarOpen}
             aria-controls="mobile-sidebar"
           >
-            {sidebarOpen ? (
-              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              {sidebarOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              ) : (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
+              )}
+            </svg>
           </button>
         </div>
       </header>
 
-      {/* Mobile Sidebar Overlay */}
+      {/* Mobile Sidebar Overlay - Only visible on mobile when sidebar is open */}
       {sidebarOpen && (
         <div
-          className="md:hidden fixed inset-0 z-50 bg-black/50"
+          className="lg:hidden fixed inset-0 z-[45] bg-black/50"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      {/* Mobile Sidebar (only renders when open) */}
+      {/* Mobile Sidebar - Only visible on mobile when toggled */}
       {sidebarOpen && (
         <aside
           ref={sidebarRef}
           id="mobile-sidebar"
-          className="md:hidden fixed inset-y-0 left-0 z-[55] w-64 bg-white border-r border-gray-200"
+          className="lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 overflow-y-auto"
           aria-label="Main navigation"
           role="navigation"
         >
@@ -277,9 +275,9 @@ export default function DashboardLayout({
         </aside>
       )}
 
-      {/* Desktop Sidebar (always visible on md+) */}
+      {/* Desktop Sidebar - Always visible on large screens */}
       <aside
-        className="hidden md:flex fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 flex-col"
+        className="hidden lg:flex fixed inset-y-0 left-0 z-30 w-64 flex-col bg-white border-r border-gray-200"
         aria-label="Main navigation"
         role="navigation"
       >
@@ -348,7 +346,7 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main id="main-content" className="md:ml-64 pt-16 md:pt-0" tabIndex={-1}>
+      <main id="main-content" className="lg:ml-64 pt-16 lg:pt-0 min-h-screen" tabIndex={-1}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}
         </div>
