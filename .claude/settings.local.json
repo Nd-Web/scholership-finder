@@ -8,7 +8,11 @@
       "Bash(node scripts/test-supabase.js)",
       "Bash(taskkill:*)",
       "Bash(Get-Process -Id 13448)",
-      "Bash(Stop-Process -Force)"
+      "Bash(Stop-Process -Force)",
+      "Bash(git add:*)",
+      "Bash(git commit -m 'Fix TypeScript errors in recommendations route:*)",
+      "Bash(git push:*)",
+      "Bash(git commit -m 'Fix TypeScript error in Supabase client:*)"
     ]
   }
 }
