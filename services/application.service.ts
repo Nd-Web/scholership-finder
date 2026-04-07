@@ -404,9 +404,9 @@ export class ApplicationService {
   /**
    * Maps Supabase errors to user-friendly messages.
    */
-  private mapDatabaseError(error: Record<string, unknown>): string {
-    const code = error.code as string;
-    const message = error.message as string;
+  private mapDatabaseError(error: any): string {
+    const code = (error as any).code as string;
+    const message = (error as any).message as string;
 
     const errorMap: Record<string, string> = {
       '23505': 'You are already tracking this scholarship',
