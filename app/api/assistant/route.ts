@@ -106,7 +106,7 @@ Guidelines:
       const keywords = message.toLowerCase().split(' ').filter((w: string) => w.length > 3);
       matchedScholarships = scholarships.filter(s => {
         const searchText = `${s.title} ${s.description} ${s.eligibility}`.toLowerCase();
-        return keywords.some(kw => searchText.includes(kw));
+        return keywords.some((kw: string) => searchText.includes(kw));
       }).slice(0, 5);
     }
 
