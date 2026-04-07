@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 
     if (hasSearchIntent && profile && allScholarships) {
       // Smart keyword matching based on user profile
-      const keywords = lowerMessage.split(' ').filter(w => w.length > 3);
+      const keywords = lowerMessage.split(' ').filter((w: string) => w.length > 3);
 
       // Boost scholarships that match user's profile
       matchedScholarships = allScholarships
