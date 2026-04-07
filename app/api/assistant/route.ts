@@ -103,7 +103,7 @@ Guidelines:
     const hasSearchIntent = searchKeywords.some(kw => message.toLowerCase().includes(kw));
 
     if (hasSearchIntent && scholarships) {
-      const keywords = message.toLowerCase().split(' ').filter(w => w.length > 3);
+      const keywords = message.toLowerCase().split(' ').filter((w: string) => w.length > 3);
       matchedScholarships = scholarships.filter(s => {
         const searchText = `${s.title} ${s.description} ${s.eligibility}`.toLowerCase();
         return keywords.some(kw => searchText.includes(kw));
