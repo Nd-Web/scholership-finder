@@ -13,9 +13,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user session
-    const { data: supabase } = await import('@/lib/supabase/server');
-    const client = await supabase.createClient();
-    const { data: { user } } = await client.auth.getUser();
+    const client = await createClient();
+    const { data } = await client.auth.getUser();
+    const user = data?.user;
 
     if (!user) {
       return NextResponse.json(
