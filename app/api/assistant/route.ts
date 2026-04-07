@@ -94,8 +94,8 @@ Guidelines:
       throw new Error(`Claude API error: ${response.status}`);
     }
 
-    const data = await response.json();
-    const aiResponse = data.content?.[0]?.text || 'I apologize, but I encountered an issue. Please try again.';
+    const claudeResponse = await response.json();
+    const aiResponse = claudeResponse.content?.[0]?.text || 'I apologize, but I encountered an issue. Please try again.';
 
     // Search for scholarships if user is asking about finding them
     let matchedScholarships = [];
