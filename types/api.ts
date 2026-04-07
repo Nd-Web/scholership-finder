@@ -80,8 +80,8 @@ export interface CreateProfileRequest {
   fieldOfStudy?: string;
   currentEducationLevel?: string;
   targetEducationLevel?: string;
-  gpa?: number;
-  gpaScale?: number;
+  gpa?: number | null;
+  gpaScale?: number | null;
   bio?: string;
   skills?: string[];
   extracurriculars?: string[];

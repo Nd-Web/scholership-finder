@@ -21,16 +21,23 @@ import type { Profile, Scholarship, ScholarshipMatch, MatchExplanation, MatchFac
  * Higher weight = more important in final score.
  * Total: 100 (for easy percentage calculation)
  */
-export const DEFAULT_WEIGHTS = {
+export interface MatchingWeights {
+  country: number;
+  fieldOfStudy: number;
+  gpa: number;
+  fundingType: number;
+  deadline: number;
+  educationLevel: number;
+}
+
+export const DEFAULT_WEIGHTS: MatchingWeights = {
   country: 25,        // Eligibility by country
   fieldOfStudy: 25,   // Field of study match
   gpa: 20,            // GPA requirement
   fundingType: 15,    // Funding type preference
   deadline: 10,       // Deadline feasibility
   educationLevel: 5,  // Education level match
-} as const;
-
-export type MatchingWeights = typeof DEFAULT_WEIGHTS;
+};
 
 /**
  * Minimum score threshold for recommendations.

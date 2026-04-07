@@ -6,7 +6,7 @@
  */
 
 import type { Profile, CreateProfileRequest, UpdateProfileRequest } from '@/types';
-import { validateProfile, validateProfileUpdate } from '@/lib/validators';
+import { validateProfile, validateProfileUpdate, type ProfileInput, type ProfileUpdateInput } from '@/lib/validators';
 
 // ============================================
 // TYPE DEFINITIONS
@@ -48,8 +48,8 @@ export class ProfileService {
       const profileData = this.transformToDatabase(userId, validatedData);
 
       // Insert into database
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { data: createdProfile, error } = await client
         .from('profiles')
@@ -81,8 +81,8 @@ export class ProfileService {
    */
   async getProfile(userId: string): Promise<ProfileServiceResult> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { data: profile, error } = await client
         .from('profiles')
@@ -129,8 +129,8 @@ export class ProfileService {
       // Transform to database format
       const updateData = this.transformUpdateToDatabase(validatedData);
 
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { data: updatedProfile, error } = await client
         .from('profiles')
@@ -166,8 +166,8 @@ export class ProfileService {
    */
   async hasProfile(userId: string): Promise<boolean> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { count, error } = await client
         .from('profiles')
@@ -187,7 +187,7 @@ export class ProfileService {
   /**
    * Transforms API request to database format.
    */
-  private transformToDatabase(userId: string, data: CreateProfileRequest): Partial<Profile> {
+  private transformToDatabase(userId: string, data: ProfileInput): Partial<Profile> {
     return {
       user_id: userId,
       first_name: data.firstName,
@@ -198,8 +198,8 @@ export class ProfileService {
       field_of_study: data.fieldOfStudy,
       current_education_level: data.currentEducationLevel as Profile['current_education_level'],
       target_education_level: data.targetEducationLevel as Profile['target_education_level'],
-      gpa: data.gpa,
-      gpa_scale: data.gpaScale,
+      gpa: data.gpa ?? null,
+      gpa_scale: data.gpaScale ?? null,
       bio: data.bio,
       skills: data.skills || [],
       extracurriculars: data.extracurriculars || [],
@@ -212,7 +212,7 @@ export class ProfileService {
   /**
    * Transforms update request to database format.
    */
-  private transformUpdateToDatabase(data: UpdateProfileRequest): Partial<Profile> {
+  private transformUpdateToDatabase(data: ProfileUpdateInput): Partial<Profile> {
     const updateData: Partial<Profile> = {};
 
     if (data.firstName !== undefined) updateData.first_name = data.firstName;
@@ -227,8 +227,8 @@ export class ProfileService {
     if (data.targetEducationLevel !== undefined) {
       updateData.target_education_level = data.targetEducationLevel as Profile['target_education_level'];
     }
-    if (data.gpa !== undefined) updateData.gpa = data.gpa;
-    if (data.gpaScale !== undefined) updateData.gpa_scale = data.gpaScale;
+    if (data.gpa !== undefined) updateData.gpa = data.gpa ?? null;
+    if (data.gpaScale !== undefined) updateData.gpa_scale = data.gpaScale ?? null;
     if (data.bio !== undefined) updateData.bio = data.bio;
     if (data.skills !== undefined) updateData.skills = data.skills;
     if (data.extracurriculars !== undefined) updateData.extracurriculars = data.extracurriculars;
@@ -248,9 +248,9 @@ export class ProfileService {
   /**
    * Maps Supabase errors to user-friendly messages.
    */
-  private mapDatabaseError(error: Record<string, unknown>): string {
-    const code = error.code as string;
-    const message = error.message as string;
+  private mapDatabaseError(error: { code?: string; message?: string }): string {
+    const code = error.code;
+    const message = error.message;
 
     // Common Supabase error codes
     const errorMap: Record<string, string> = {
@@ -260,7 +260,7 @@ export class ProfileService {
       'PGRST116': 'Record not found',
     };
 
-    return errorMap[code] || message || 'A database error occurred';
+    return (code && errorMap[code]) || message || 'A database error occurred';
   }
 }
 

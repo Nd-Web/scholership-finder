@@ -51,8 +51,8 @@ export class ScholarshipService {
         sortOrder = 'asc',
       } = options;
 
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       // Build query
       let query = client
@@ -142,8 +142,8 @@ export class ScholarshipService {
    */
   async getScholarship(id: string): Promise<ScholarshipServiceResult> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { data: scholarship, error } = await client
         .from('scholarships')
@@ -184,8 +184,8 @@ export class ScholarshipService {
       // Validate input
       const validatedData = validateScholarship(data);
 
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { data: createdScholarship, error } = await client
         .from('scholarships')
@@ -224,8 +224,8 @@ export class ScholarshipService {
     data: Partial<Scholarship>
   ): Promise<ScholarshipServiceResult> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { data: updatedScholarship, error } = await client
         .from('scholarships')
@@ -261,8 +261,8 @@ export class ScholarshipService {
    */
   async deleteScholarship(id: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { error } = await client
         .from('scholarships')
@@ -300,8 +300,8 @@ export class ScholarshipService {
         sortOrder = 'asc',
       } = options;
 
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       // Use full-text search on title and description
       let dbQuery = client
@@ -351,8 +351,8 @@ export class ScholarshipService {
    */
   async getScholarshipsByIds(ids: string[]): Promise<Scholarship[]> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { data: scholarships, error } = await client
         .from('scholarships')
@@ -375,9 +375,9 @@ export class ScholarshipService {
   /**
    * Maps Supabase errors to user-friendly messages.
    */
-  private mapDatabaseError(error: Record<string, unknown>): string {
-    const code = error.code as string;
-    const message = error.message as string;
+  private mapDatabaseError(error: { code?: string; message?: string }): string {
+    const code = error.code;
+    const message = error.message;
 
     const errorMap: Record<string, string> = {
       '23505': 'A scholarship with this title already exists',
@@ -386,7 +386,7 @@ export class ScholarshipService {
       'PGRST116': 'Record not found',
     };
 
-    return errorMap[code] || message || 'A database error occurred';
+    return (code && errorMap[code]) || message || 'A database error occurred';
   }
 }
 

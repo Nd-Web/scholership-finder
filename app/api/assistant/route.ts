@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       matchedScholarships = allScholarships
         .filter(s => {
           const searchText = `${s.title} ${s.description} ${s.eligibility} ${s.country?.join(' ') || ''} ${s.field_of_study?.join(' ') || ''}`.toLowerCase();
-          return keywords.some(kw => searchText.includes(kw));
+          return keywords.some((kw: string) => searchText.includes(kw));
         })
         .sort((a, b) => {
           let scoreA = 0;
@@ -63,16 +63,16 @@ export async function POST(request: NextRequest) {
           // Boost if matches user's field of study
           if (profile.field_of_study) {
             const userField = profile.field_of_study.toLowerCase();
-            if (a.field_of_study?.some(f => f.toLowerCase().includes(userField))) scoreA += 2;
-            if (b.field_of_study?.some(f => f.toLowerCase().includes(userField))) scoreB += 2;
+            if (a.field_of_study?.some((f: string) => f.toLowerCase().includes(userField))) scoreA += 2;
+            if (b.field_of_study?.some((f: string) => f.toLowerCase().includes(userField))) scoreB += 2;
           }
 
           // Boost if matches user's preferred countries
           if (profile.preferred_study_countries) {
-            profile.preferred_study_countries.forEach(country => {
+            profile.preferred_study_countries.forEach((country: string) => {
               const c = country.toLowerCase();
-              if (a.country?.some(x => x.toLowerCase().includes(c))) scoreA += 1;
-              if (b.country?.some(x => x.toLowerCase().includes(c))) scoreB += 1;
+              if (a.country?.some((x: string) => x.toLowerCase().includes(c))) scoreA += 1;
+              if (b.country?.some((x: string) => x.toLowerCase().includes(c))) scoreB += 1;
             });
           }
 
