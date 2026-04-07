@@ -98,7 +98,7 @@ Guidelines:
     const aiResponse = claudeResponse.content?.[0]?.text || 'I apologize, but I encountered an issue. Please try again.';
 
     // Search for scholarships if user is asking about finding them
-    let matchedScholarships = [];
+    let matchedScholarships: any[] = [];
     const searchKeywords = ['find', 'search', 'show', 'list', 'scholarship', 'grant', 'funding'];
     const hasSearchIntent = searchKeywords.some(kw => message.toLowerCase().includes(kw));
 
