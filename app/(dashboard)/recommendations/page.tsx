@@ -124,7 +124,7 @@ export default function RecommendationsPage() {
       </div>
 
       {/* Results Summary */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-green-50 rounded-xl p-4 border border-green-200">
           <p className="text-sm text-green-700">Excellent Matches (80%+)</p>
           <p className="text-2xl font-bold text-green-900 mt-1">

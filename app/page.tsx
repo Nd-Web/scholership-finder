@@ -1,6 +1,11 @@
+'use client';
+
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
@@ -21,21 +26,58 @@ export default function Home() {
                 How It Works
               </Link>
             </nav>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <Link
                 href="/login"
-                className="text-gray-600 hover:text-gray-900 transition font-medium"
+                className="text-gray-600 hover:text-gray-900 transition font-medium text-sm sm:text-base"
               >
                 Sign In
               </Link>
               <Link
                 href="/signup"
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+                className="bg-blue-600 text-white px-3 py-2 sm:px-4 rounded-lg font-medium hover:bg-blue-700 transition text-sm sm:text-base"
               >
                 Get Started
               </Link>
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition"
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? (
+                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
+          {/* Mobile menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden py-4 border-t border-gray-200">
+              <nav className="flex flex-col gap-2">
+                <Link
+                  href="/#features"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
+                >
+                  Features
+                </Link>
+                <Link
+                  href="/#how-it-works"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
+                >
+                  How It Works
+                </Link>
+              </nav>
+            </div>
+          )}
         </div>
       </header>
 
