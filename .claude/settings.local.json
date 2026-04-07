@@ -12,7 +12,10 @@
       "Bash(git add:*)",
       "Bash(git commit -m 'Fix TypeScript errors in recommendations route:*)",
       "Bash(git push:*)",
-      "Bash(git commit -m 'Fix TypeScript error in Supabase client:*)"
+      "Bash(git commit -m 'Fix TypeScript error in Supabase client:*)",
+      "Bash(git commit -m 'Fix TypeScript errors in server.ts:*)",
+      "Bash(git commit -m 'Fix import pattern in application.service.ts:*)",
+      "Bash(git commit -m 'Fix TypeScript error in mapDatabaseError:*)"
     ]
   }
 }
