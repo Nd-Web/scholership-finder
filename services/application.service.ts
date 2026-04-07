@@ -43,8 +43,8 @@ export class ApplicationService {
         status: 'saved',
       });
 
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       // Check if application already exists
       const { data: existing } = await client
@@ -99,8 +99,8 @@ export class ApplicationService {
    */
   async getUserApplications(userId: string): Promise<ApplicationListResult> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { data: applications, error } = await client
         .from('applications')
@@ -141,8 +141,8 @@ export class ApplicationService {
    */
   async getApplication(userId: string, applicationId: string): Promise<ApplicationServiceResult> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { data: application, error } = await client
         .from('applications')
@@ -198,8 +198,8 @@ export class ApplicationService {
       // Validate input
       const validatedData = validateApplicationUpdate(data);
 
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       // Verify ownership
       const { data: existing } = await client
@@ -278,8 +278,8 @@ export class ApplicationService {
    */
   async deleteApplication(userId: string, applicationId: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       // Verify ownership
       const { data: existing } = await client
@@ -332,8 +332,8 @@ export class ApplicationService {
     error?: string;
   }> {
     try {
-      const { data: supabase } = await import('@/lib/supabase/server');
-      const client = await supabase.createClient();
+      const { createClient } = await import('@/lib/supabase/server');
+      const client = await createClient();
 
       const { data: applications, error } = await client
         .from('applications')
