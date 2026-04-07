@@ -31,84 +31,156 @@ export async function POST(request: NextRequest) {
       .eq('user_id', user.id)
       .single();
 
-    // Get recent scholarships for context
-    const { data: scholarships } = await client
+    // Get scholarships for context
+    const { data: allScholarships } = await client
       .from('scholarships')
-      .select('id, title, provider_name, description, eligibility, funding_type, amount')
-      .limit(10);
+      .select('id, title, provider_name, description, eligibility, funding_type, amount, deadline, country, field_of_study')
+      .eq('is_active', true);
 
-    // Build context for the AI
-    const systemContext = `You are a helpful Scholarship Assistant for a scholarship finder platform.
-Your role is to help students find and apply for scholarships.
+    // Smart scholarship matching based on user intent
+    let matchedScholarships: any[] = [];
+    const lowerMessage = message.toLowerCase();
 
-User Profile Context:
-- Name: ${profile?.first_name || 'Student'} ${profile?.last_name || ''}
-- Field of Study: ${profile?.field_of_study || 'Not specified'}
-- Education Level: ${profile?.current_education_level || 'Not specified'}
-- GPA: ${profile?.gpa || 'Not specified'}/${profile?.gpa_scale || '4.0'}
-- Preferred Countries: ${profile?.preferred_study_countries?.join(', ') || 'Not specified'}
-- Financial Need: ${profile?.financial_need || 'Not specified'}
+    // Check for search/intent keywords
+    const hasSearchIntent = ['find', 'search', 'show', 'list', 'scholarship', 'grant', 'funding', 'eligible', 'eligibility'].some(kw => lowerMessage.includes(kw));
+    const hasCountryIntent = ['country', 'countries', 'study abroad', 'international'].some(kw => lowerMessage.includes(kw));
+    const hasFieldIntent = ['field', 'major', 'study', 'computer', 'engineering', 'science', 'business'].some(kw => lowerMessage.includes(kw));
 
-Available Scholarships (use these when relevant):
-${scholarships?.map(s => `- ${s.title} by ${s.provider_name}: ${s.funding_type}, ${s.amount ? `$${s.amount}` : 'Amount varies'}`).join('\n') || 'No scholarships available'}
+    if (hasSearchIntent && profile && allScholarships) {
+      // Smart keyword matching based on user profile
+      const keywords = lowerMessage.split(' ').filter(w => w.length > 3);
 
-Guidelines:
-1. Be friendly, encouraging, and supportive
-2. Provide specific, actionable advice
-3. When suggesting scholarships, reference actual ones from the list above
-4. Help with: scholarship search, eligibility questions, application tips, essay advice, deadline management
-5. Keep responses concise but helpful (2-4 paragraphs max)
-6. Use bullet points and formatting for readability
-7. Always try to be encouraging - applying for scholarships can be stressful!`;
+      // Boost scholarships that match user's profile
+      matchedScholarships = allScholarships
+        .filter(s => {
+          const searchText = `${s.title} ${s.description} ${s.eligibility} ${s.country?.join(' ') || ''} ${s.field_of_study?.join(' ') || ''}`.toLowerCase();
+          return keywords.some(kw => searchText.includes(kw));
+        })
+        .sort((a, b) => {
+          let scoreA = 0;
+          let scoreB = 0;
+
+          // Boost if matches user's field of study
+          if (profile.field_of_study) {
+            const userField = profile.field_of_study.toLowerCase();
+            if (a.field_of_study?.some(f => f.toLowerCase().includes(userField))) scoreA += 2;
+            if (b.field_of_study?.some(f => f.toLowerCase().includes(userField))) scoreB += 2;
+          }
+
+          // Boost if matches user's preferred countries
+          if (profile.preferred_study_countries) {
+            profile.preferred_study_countries.forEach(country => {
+              const c = country.toLowerCase();
+              if (a.country?.some(x => x.toLowerCase().includes(c))) scoreA += 1;
+              if (b.country?.some(x => x.toLowerCase().includes(c))) scoreB += 1;
+            });
+          }
+
+          return scoreB - scoreA;
+        })
+        .slice(0, 5);
+    }
+
+    // Build user profile context
+    const userProfileContext = profile ? `
+- Name: ${profile.first_name || 'Student'} ${profile.last_name || ''}
+- Field of Study: ${profile.field_of_study || 'Not specified'}
+- Education Level: ${profile.current_education_level || 'Not specified'}
+- GPA: ${profile.gpa || 'Not specified'}/${profile.gpa_scale || '4.0'}
+- Preferred Countries: ${profile.preferred_study_countries?.join(', ') || 'Not specified'}
+- Financial Need: ${profile.financial_need || 'Not specified'}
+`.trim() : 'Profile not set up yet';
+
+    // Build scholarship context
+    const scholarshipContext = matchedScholarships.length > 0
+      ? `TOP MATCHED SCHOLARCHIPS (recommend these):
+${matchedScholarships.map(s => `- "${s.title}" by ${s.provider_name} | ${s.funding_type} | ${s.country?.[0] || 'Various'} | Deadline: ${s.deadline ? new Date(s.deadline).toLocaleDateString() : 'TBA'}`).join('\n')}`
+      : allScholarships && allScholarships.length > 0
+      ? `AVAILABLE SCHOLARSHIPS:
+${allScholarships.slice(0, 10).map(s => `- "${s.title}" by ${s.provider_name} | ${s.funding_type}`).join('\n')}`
+      : 'No scholarships currently available';
+
+    // Build system context with smarter instructions
+    const systemContext = `You are a helpful, knowledgeable Scholarship Assistant AI.
+
+YOUR USER:
+${userProfileContext}
+
+${scholarshipContext}
+
+YOUR ROLE:
+Help students find scholarships, understand eligibility, and navigate the application process.
+
+RESPONSE GUIDELINES:
+1. **Be specific and actionable** - Give concrete steps, not vague advice
+2. **Personalize responses** - Reference the user's profile (GPA, field of study, countries) when relevant
+3. **Recommend actual scholarships** - When suggesting scholarships, use the ones listed above with their exact names
+4. **Encourage but be realistic** - Scholarship hunting is tough; be supportive but honest
+5. **Structure your responses** - Use bullet points, numbered lists, and bold text for readability
+6. **Keep it concise** - 2-4 paragraphs max, unless detailed explanation is needed
+7. **Ask clarifying questions** - If the user's request is vague, ask for more details
+
+SPECIAL HANDLING:
+- If user asks about eligibility: Compare their profile (GPA, field, country) against scholarship requirements
+- If user asks for tips: Provide 3-5 specific, actionable tips with examples
+- If user seems overwhelmed: Break down the process into small, manageable steps
+- If mentioning deadlines: Emphasize urgency and suggest prioritization
+
+TONE: Friendly, encouraging, professional - like a knowledgeable mentor.`;
 
     // Build conversation messages
     const messages = [
-      { role: 'system', content: systemContext },
-      ...(conversationHistory || []).slice(-10).map((msg: any) => ({
+      ...(conversationHistory || []).slice(-8).map((msg: any) => ({
         role: msg.role,
         content: msg.content
       })),
       { role: 'user', content: message }
     ];
 
-    // Call Claude API
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    // Check if Groq API key is configured
+    if (!process.env.GROQ_API_KEY || process.env.GROQ_API_KEY === '') {
+      return NextResponse.json({
+        success: true,
+        data: {
+          response: "🔑 **API Key Not Configured**\n\nTo enable the AI assistant:\n\n1. Get a FREE API key at: https://console.groq.com/keys\n2. Add to `.env.local`: `GROQ_API_KEY=your-key-here`\n3. Restart the dev server",
+          scholarships: matchedScholarships,
+        },
+      });
+    }
+
+    // Call Groq API (free tier)
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY || '',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6-20250929',
+        model: 'llama-3.3-70b-versatile',
         max_tokens: 1024,
-        messages: messages.filter(m => m.role !== 'system'),
-        system: systemContext,
+        messages: [
+          { role: 'system', content: systemContext },
+          ...messages
+        ],
+        temperature: 0.7,
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('Claude API error:', errorData);
-      throw new Error(`Claude API error: ${response.status}`);
+      console.error('Groq API error:', errorData);
+
+      if (response.status === 401) {
+        throw new Error('Invalid Groq API key. Please check your GROQ_API_KEY configuration.');
+      }
+      if (response.status === 429) {
+        throw new Error('Groq rate limit exceeded. Please try again in a few minutes.');
+      }
+      throw new Error(`Groq API error: ${response.status}`);
     }
 
-    const claudeResponse = await response.json();
-    const aiResponse = claudeResponse.content?.[0]?.text || 'I apologize, but I encountered an issue. Please try again.';
-
-    // Search for scholarships if user is asking about finding them
-    let matchedScholarships: any[] = [];
-    const searchKeywords = ['find', 'search', 'show', 'list', 'scholarship', 'grant', 'funding'];
-    const hasSearchIntent = searchKeywords.some(kw => message.toLowerCase().includes(kw));
-
-    if (hasSearchIntent && scholarships) {
-      const keywords = message.toLowerCase().split(' ').filter((w: string) => w.length > 3);
-      matchedScholarships = scholarships.filter(s => {
-        const searchText = `${s.title} ${s.description} ${s.eligibility}`.toLowerCase();
-        return keywords.some((kw: string) => searchText.includes(kw));
-      }).slice(0, 5);
-    }
+    const groqResponse = await response.json();
+    const aiResponse = groqResponse.choices?.[0]?.message?.content || 'I apologize, but I encountered an issue. Please try again.';
 
     return NextResponse.json({
       success: true,

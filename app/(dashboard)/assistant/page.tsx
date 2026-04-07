@@ -98,7 +98,12 @@ export default function AssistantPage() {
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error?.message || 'Failed to get response');
+        const errorMsg = data.error?.message || 'Failed to get response';
+        // Check for API key error
+        if (errorMsg.includes('API key') || errorMsg.includes('configured')) {
+          throw new Error(errorMsg);
+        }
+        throw new Error(errorMsg);
       }
 
       const assistantMessage: Message = {

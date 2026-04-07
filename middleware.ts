@@ -22,6 +22,8 @@ const PROTECTED_ROUTES = [
   '/scholarships',
   '/applications',
   '/recommendations',
+  '/assistant',
+  '/matching-config',
 ];
 
 /**

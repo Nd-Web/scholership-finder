@@ -16,7 +16,9 @@
       "Bash(git commit -m 'Fix TypeScript errors in server.ts:*)",
       "Bash(git commit -m 'Fix import pattern in application.service.ts:*)",
       "Bash(git commit -m 'Fix TypeScript error in mapDatabaseError:*)",
-      "Bash(git commit -m 'Fix import pattern in matching.service.ts:*)"
+      "Bash(git commit -m 'Fix import pattern in matching.service.ts:*)",
+      "Bash(git commit -m 'Fix weights type error in matching.service.ts:*)",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }
