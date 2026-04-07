@@ -107,9 +107,9 @@ export default function NotificationsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
+      <div className="min-h-[400px] flex items-center justify-center" role="status" aria-label="Loading notifications">
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" aria-hidden="true"></div>
           <p className="text-gray-600">Loading notifications...</p>
         </div>
       </div>
@@ -118,19 +118,19 @@ export default function NotificationsPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div>
+      <header>
         <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
         <p className="text-gray-600 mt-1">Manage your notification preferences and view upcoming deadlines</p>
-      </div>
+      </header>
 
       {/* Upcoming Deadlines */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Upcoming Deadlines</h2>
+      <section className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden" aria-labelledby="deadlines-heading">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
+          <h2 id="deadlines-heading" className="text-lg font-semibold text-gray-900">Upcoming Deadlines</h2>
         </div>
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {data?.upcomingDeadlines && data.upcomingDeadlines.length > 0 ? (
-            <div className="space-y-3">
+            <ul className="space-y-3" role="list">
               {data.upcomingDeadlines.map((deadline) => {
                 const urgency = getDeadlineUrgency(deadline.daysUntil);
                 const urgencyLabel = urgency === 'expired'
@@ -142,20 +142,21 @@ export default function NotificationsPage() {
                   : `Due ${new Date(deadline.deadline).toLocaleDateString()}`;
 
                 return (
-                  <div
+                  <li
                     key={deadline.applicationId}
                     className={cn(
                       'p-4 rounded-lg border',
                       getUrgencyStyles(urgency)
                     )}
+                    role="listitem"
                   >
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                       <div className="flex-1">
                         <h3 className="font-semibold">{deadline.title}</h3>
                         <p className="text-sm opacity-80 mt-1">{deadline.provider}</p>
                       </div>
                       <span className={cn(
-                        'px-2.5 py-1 rounded-full text-xs font-medium',
+                        'px-2.5 py-1 rounded-full text-xs font-medium self-start',
                         urgency === 'expired' ? 'bg-red-200 text-red-800' :
                         urgency === 'urgent' ? 'bg-red-200 text-red-800' :
                         urgency === 'soon' ? 'bg-yellow-200 text-yellow-800' :
@@ -164,118 +165,132 @@ export default function NotificationsPage() {
                         {urgencyLabel}
                       </span>
                     </div>
-                    <div className="mt-3 flex items-center gap-4">
+                    <div className="mt-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                       <span className="text-sm">
                         Status: <span className="font-medium capitalize">{deadline.status.replace('_', ' ')}</span>
                       </span>
                       {deadline.status !== 'submitted' && urgency !== 'expired' && (
                         <button
-                          onClick={() => router.push(`/applications`)}
-                          className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                          onClick={() => router.push('/applications')}
+                          className="text-sm text-blue-600 hover:text-blue-700 font-medium text-left"
                         >
                           Continue application →
                         </button>
                       )}
                     </div>
-                  </div>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           ) : (
-            <div className="text-center py-8">
-              <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="text-center py-8" role="status">
+              <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               <p className="text-gray-600">No upcoming deadlines</p>
               <p className="text-sm text-gray-500 mt-1">Browse scholarships and start applying!</p>
               <button
                 onClick={() => router.push('/scholarships')}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+                className="mt-4 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium min-h-[44px]"
               >
                 Browse Scholarships
               </button>
             </div>
           )}
         </div>
-      </div>
+      </section>
 
       {/* Notification Preferences */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">Notification Preferences</h2>
+      <section className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden" aria-labelledby="preferences-heading">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h2 id="preferences-heading" className="text-lg font-semibold text-gray-900">Notification Preferences</h2>
           <button
             onClick={savePreferences}
             disabled={saving}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium transition"
+            className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium transition min-h-[44px] sm:min-h-0"
           >
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true"></span>
+                Saving...
+              </span>
+            ) : 'Save Changes'}
           </button>
         </div>
-        <div className="p-6 space-y-4">
-          <div className="flex items-center justify-between py-3 border-b border-gray-100">
-            <div>
+        <div className="p-4 sm:p-6 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-gray-100 gap-3">
+            <div className="flex-1">
               <h3 className="font-medium text-gray-900">Deadline Reminders</h3>
               <p className="text-sm text-gray-500 mt-1">Get notified about upcoming scholarship deadlines</p>
             </div>
             <button
               onClick={() => handlePreferenceChange('email_deadline_reminders')}
+              role="switch"
+              aria-checked={preferences.email_deadline_reminders}
+              aria-label="Toggle deadline reminders"
               className={cn(
-                'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
+                'relative inline-flex h-7 w-14 items-center rounded-full transition-colors flex-shrink-0',
                 preferences.email_deadline_reminders ? 'bg-blue-600' : 'bg-gray-200'
               )}
             >
               <span
                 className={cn(
-                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform ml-1',
-                  preferences.email_deadline_reminders ? 'translate-x-5' : 'translate-x-0'
+                  'inline-block h-5 w-5 transform rounded-full bg-white transition-transform shadow',
+                  preferences.email_deadline_reminders ? 'translate-x-8' : 'translate-x-1'
                 )}
               />
             </button>
           </div>
 
-          <div className="flex items-center justify-between py-3 border-b border-gray-100">
-            <div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-gray-100 gap-3">
+            <div className="flex-1">
               <h3 className="font-medium text-gray-900">New Match Alerts</h3>
               <p className="text-sm text-gray-500 mt-1">Get notified when new scholarships match your profile</p>
             </div>
             <button
               onClick={() => handlePreferenceChange('email_matches')}
+              role="switch"
+              aria-checked={preferences.email_matches}
+              aria-label="Toggle new match alerts"
               className={cn(
-                'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
+                'relative inline-flex h-7 w-14 items-center rounded-full transition-colors flex-shrink-0',
                 preferences.email_matches ? 'bg-blue-600' : 'bg-gray-200'
               )}
             >
               <span
                 className={cn(
-                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform ml-1',
-                  preferences.email_matches ? 'translate-x-5' : 'translate-x-0'
+                  'inline-block h-5 w-5 transform rounded-full bg-white transition-transform shadow',
+                  preferences.email_matches ? 'translate-x-8' : 'translate-x-1'
                 )}
               />
             </button>
           </div>
 
-          <div className="flex items-center justify-between py-3">
-            <div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between py-3 gap-3">
+            <div className="flex-1">
               <h3 className="font-medium text-gray-900">Application Updates</h3>
               <p className="text-sm text-gray-500 mt-1">Get notified about changes to your applications</p>
             </div>
             <button
               onClick={() => handlePreferenceChange('email_updates')}
+              role="switch"
+              aria-checked={preferences.email_updates}
+              aria-label="Toggle application updates"
               className={cn(
-                'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
+                'relative inline-flex h-7 w-14 items-center rounded-full transition-colors flex-shrink-0',
                 preferences.email_updates ? 'bg-blue-600' : 'bg-gray-200'
               )}
             >
               <span
                 className={cn(
-                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform ml-1',
-                  preferences.email_updates ? 'translate-x-5' : 'translate-x-0'
+                  'inline-block h-5 w-5 transform rounded-full bg-white transition-transform shadow',
+                  preferences.email_updates ? 'translate-x-8' : 'translate-x-1'
                 )}
               />
             </button>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

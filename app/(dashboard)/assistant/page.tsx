@@ -25,6 +25,7 @@ export default function AssistantPage() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -127,6 +128,7 @@ export default function AssistantPage() {
       }]);
     } finally {
       setLoading(false);
+      inputRef.current?.focus();
     }
   };
 
@@ -142,14 +144,19 @@ export default function AssistantPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6">
-      <div className="mb-6">
+      <header className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Scholarship Assistant</h1>
         <p className="text-gray-600 mt-1">Get AI-powered help finding and applying for scholarships</p>
-      </div>
+      </header>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-12rem)] min-h-[500px]">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-[calc(100vh-12rem)] min-h-[400px] max-h-[600px]">
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div
+          className="flex-1 overflow-y-auto p-4 space-y-4"
+          role="log"
+          aria-label="Chat messages"
+          aria-live="polite"
+        >
           {messages.map((message) => (
             <div
               key={message.id}
@@ -165,9 +172,9 @@ export default function AssistantPage() {
                 <div className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</div>
 
                 {message.scholarships && message.scholarships.length > 0 && (
-                  <div className="mt-3 space-y-2">
+                  <ul className="mt-3 space-y-2" role="list" aria-label="Related scholarships">
                     {message.scholarships.map((scholarship) => (
-                      <div
+                      <li
                         key={scholarship.id}
                         className={`${
                           message.role === 'user'
@@ -178,9 +185,9 @@ export default function AssistantPage() {
                         <div className={`font-semibold ${message.role === 'user' ? 'text-white' : 'text-gray-900'}`}>{scholarship.title}</div>
                         <div className={`text-xs ${message.role === 'user' ? 'text-white text-opacity-80' : 'text-gray-600'}`}>{scholarship.provider_name}</div>
                         <div className={`text-xs ${message.role === 'user' ? 'text-white text-opacity-80' : 'text-gray-600'}`}>{scholarship.funding_type}</div>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 )}
 
                 <div
@@ -195,10 +202,10 @@ export default function AssistantPage() {
           ))}
 
           {loading && (
-            <div className="flex justify-start">
+            <div className="flex justify-start" role="status" aria-label="AI is thinking">
               <div className="bg-gray-100 rounded-2xl px-4 py-3">
                 <div className="flex items-center gap-2">
-                  <div className="flex space-x-1">
+                  <div className="flex space-x-1" aria-hidden="true">
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
@@ -209,24 +216,28 @@ export default function AssistantPage() {
             </div>
           )}
 
-          <div ref={messagesEndRef} />
+          <div ref={messagesEndRef} aria-hidden="true" />
         </div>
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="border-t border-gray-200 p-4 bg-white">
           <div className="flex gap-2 sm:gap-3">
+            <label htmlFor="chat-input" className="sr-only">Type your message</label>
             <input
+              ref={inputRef}
+              id="chat-input"
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask me anything about scholarships..."
-              className="flex-1 px-3 sm:px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 placeholder-gray-400 min-w-0"
+              className="flex-1 px-3 sm:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 placeholder-gray-400 min-w-0 min-h-[44px]"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="px-4 sm:px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium whitespace-nowrap"
+              className="px-4 sm:px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium whitespace-nowrap min-h-[44px]"
+              aria-label="Send message"
             >
               Send
             </button>
@@ -235,28 +246,28 @@ export default function AssistantPage() {
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Quick action suggestions">
         <button
           onClick={() => setInput('What scholarships am I eligible for based on my profile?')}
-          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap"
+          className="px-4 py-2.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap min-h-[44px]"
         >
           🔍 Find my scholarships
         </button>
         <button
           onClick={() => setInput('How do I check if I\'m eligible for a scholarship?')}
-          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap"
+          className="px-4 py-2.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap min-h-[44px]"
         >
           ✓ Check eligibility
         </button>
         <button
           onClick={() => setInput('Can you give me tips for writing a scholarship essay?')}
-          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap"
+          className="px-4 py-2.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap min-h-[44px]"
         >
           💡 Essay tips
         </button>
         <button
           onClick={clearHistory}
-          className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap"
+          className="px-4 py-2.5 bg-white border border-gray-300 rounded-full text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition whitespace-nowrap min-h-[44px]"
         >
           🗑️ Clear chat
         </button>

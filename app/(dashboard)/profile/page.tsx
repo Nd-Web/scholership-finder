@@ -118,8 +118,8 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center h-64" role="status" aria-label="Loading profile">
+        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
       </div>
     );
   }
@@ -127,100 +127,136 @@ export default function ProfilePage() {
   return (
     <div className="max-w-3xl">
       {/* Header */}
-      <div className="mb-8">
+      <header className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
         <p className="text-gray-600 mt-1">
           Tell us about yourself to get better scholarship recommendations.
         </p>
-      </div>
+      </header>
 
       {/* Success Message */}
       {success && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg">
+        <div
+          className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg"
+          role="alert"
+          aria-live="polite"
+        >
           Profile saved successfully!
         </div>
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
         {/* Personal Information */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <fieldset className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
+          <legend className="text-lg font-semibold text-gray-900 px-2">Personal Information</legend>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">First name *</label>
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                First name <span className="text-red-500" aria-hidden="true">*</span>
+                <span className="sr-only">(required)</span>
+              </label>
               <input
+                id="firstName"
+                name="firstName"
                 type="text"
                 required
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400 min-h-[44px]"
                 placeholder="John"
+                aria-required="true"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Last name *</label>
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                Last name <span className="text-red-500" aria-hidden="true">*</span>
+                <span className="sr-only">(required)</span>
+              </label>
               <input
+                id="lastName"
+                name="lastName"
                 type="text"
                 required
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400 min-h-[44px]"
                 placeholder="Doe"
+                aria-required="true"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Date of birth</label>
+              <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
+                Date of birth
+              </label>
               <input
+                id="dateOfBirth"
+                name="dateOfBirth"
                 type="date"
                 value={formData.dateOfBirth}
                 onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none min-h-[44px]"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Nationality</label>
+              <label htmlFor="nationality" className="block text-sm font-medium text-gray-700 mb-2">
+                Nationality
+              </label>
               <input
+                id="nationality"
+                name="nationality"
                 type="text"
                 value={formData.nationality}
                 onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400 min-h-[44px]"
                 placeholder="e.g., American, Nigerian, Indian"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Country of residence</label>
+            <div className="sm:col-span-2">
+              <label htmlFor="countryOfResidence" className="block text-sm font-medium text-gray-700 mb-2">
+                Country of residence
+              </label>
               <input
+                id="countryOfResidence"
+                name="countryOfResidence"
                 type="text"
                 value={formData.countryOfResidence}
                 onChange={(e) => setFormData({ ...formData, countryOfResidence: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400 min-h-[44px]"
                 placeholder="e.g., United States, Canada"
               />
             </div>
           </div>
-        </div>
+        </fieldset>
 
         {/* Education Information */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Education Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Field of study</label>
+        <fieldset className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
+          <legend className="text-lg font-semibold text-gray-900 px-2">Education Information</legend>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <div className="sm:col-span-2">
+              <label htmlFor="fieldOfStudy" className="block text-sm font-medium text-gray-700 mb-2">
+                Field of study
+              </label>
               <input
+                id="fieldOfStudy"
+                name="fieldOfStudy"
                 type="text"
                 value={formData.fieldOfStudy}
                 onChange={(e) => setFormData({ ...formData, fieldOfStudy: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400 min-h-[44px]"
                 placeholder="e.g., Computer Science, Business"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Current education level</label>
+              <label htmlFor="currentEducationLevel" className="block text-sm font-medium text-gray-700 mb-2">
+                Current education level
+              </label>
               <select
+                id="currentEducationLevel"
+                name="currentEducationLevel"
                 value={formData.currentEducationLevel}
                 onChange={(e) => setFormData({ ...formData, currentEducationLevel: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none min-h-[44px]"
               >
                 <option value="">Select level</option>
                 <option value="high_school">High School</option>
@@ -232,11 +268,15 @@ export default function ProfilePage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Target education level</label>
+              <label htmlFor="targetEducationLevel" className="block text-sm font-medium text-gray-700 mb-2">
+                Target education level
+              </label>
               <select
+                id="targetEducationLevel"
+                name="targetEducationLevel"
                 value={formData.targetEducationLevel}
                 onChange={(e) => setFormData({ ...formData, targetEducationLevel: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none min-h-[44px]"
               >
                 <option value="">Select level</option>
                 <option value="high_school">High School</option>
@@ -248,61 +288,86 @@ export default function ProfilePage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">GPA</label>
+              <label htmlFor="gpa" className="block text-sm font-medium text-gray-700 mb-2">
+                GPA
+              </label>
               <div className="flex gap-2">
                 <input
+                  id="gpa"
+                  name="gpa"
                   type="number"
                   step="0.01"
                   min="0"
                   max="4"
                   value={formData.gpa}
                   onChange={(e) => setFormData({ ...formData, gpa: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400 min-h-[44px]"
                   placeholder="3.5"
+                  aria-describedby="gpa-hint"
                 />
                 <select
+                  id="gpaScale"
+                  name="gpaScale"
                   value={formData.gpaScale}
                   onChange={(e) => setFormData({ ...formData, gpaScale: e.target.value })}
-                  className="w-24 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                  className="w-24 px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none min-h-[44px]"
+                  aria-label="GPA scale"
                 >
                   <option value="4.0">/ 4.0</option>
                   <option value="5.0">/ 5.0</option>
                 </select>
               </div>
+              <p id="gpa-hint" className="text-xs text-gray-500 mt-1">Enter your GPA on the selected scale</p>
             </div>
           </div>
-        </div>
+        </fieldset>
 
         {/* Preferences */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Preferences</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <fieldset className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
+          <legend className="text-lg font-semibold text-gray-900 px-2">Preferences</legend>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Preferred study countries</label>
+              <label htmlFor="preferredStudyCountries" className="block text-sm font-medium text-gray-700 mb-2">
+                Preferred study countries
+              </label>
               <input
+                id="preferredStudyCountries"
+                name="preferredStudyCountries"
                 type="text"
                 value={formData.preferredStudyCountries}
                 onChange={(e) => setFormData({ ...formData, preferredStudyCountries: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400 min-h-[44px]"
                 placeholder="e.g., USA, UK, Canada (comma separated)"
+                aria-describedby="countries-hint"
               />
+              <p id="countries-hint" className="text-xs text-gray-500 mt-1">Separate multiple countries with commas</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Preferred study fields</label>
+              <label htmlFor="preferredStudyFields" className="block text-sm font-medium text-gray-700 mb-2">
+                Preferred study fields
+              </label>
               <input
+                id="preferredStudyFields"
+                name="preferredStudyFields"
                 type="text"
                 value={formData.preferredStudyFields}
                 onChange={(e) => setFormData({ ...formData, preferredStudyFields: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400 min-h-[44px]"
                 placeholder="e.g., Computer Science, Engineering (comma separated)"
+                aria-describedby="fields-hint"
               />
+              <p id="fields-hint" className="text-xs text-gray-500 mt-1">Separate multiple fields with commas</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Financial need level</label>
+            <div className="sm:col-span-2">
+              <label htmlFor="financialNeed" className="block text-sm font-medium text-gray-700 mb-2">
+                Financial need level
+              </label>
               <select
+                id="financialNeed"
+                name="financialNeed"
                 value={formData.financialNeed}
                 onChange={(e) => setFormData({ ...formData, financialNeed: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none min-h-[44px]"
               >
                 <option value="">Select level</option>
                 <option value="low">Low</option>
@@ -311,60 +376,81 @@ export default function ProfilePage() {
               </select>
             </div>
           </div>
-        </div>
+        </fieldset>
 
         {/* Additional Information */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Additional Information</h2>
-          <div className="space-y-4">
+        <fieldset className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
+          <legend className="text-lg font-semibold text-gray-900 px-2">Additional Information</legend>
+          <div className="space-y-4 mt-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+              <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">
+                Bio
+              </label>
               <textarea
+                id="bio"
+                name="bio"
                 rows={4}
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none text-gray-900 placeholder-gray-400"
                 placeholder="Tell us about yourself, your goals, and what makes you unique..."
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Skills</label>
+              <label htmlFor="skills" className="block text-sm font-medium text-gray-700 mb-2">
+                Skills
+              </label>
               <input
+                id="skills"
+                name="skills"
                 type="text"
                 value={formData.skills}
                 onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400 min-h-[44px]"
                 placeholder="e.g., Python, Leadership, Research (comma separated)"
+                aria-describedby="skills-hint"
               />
+              <p id="skills-hint" className="text-xs text-gray-500 mt-1">Separate multiple skills with commas</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Extracurriculars</label>
+              <label htmlFor="extracurriculars" className="block text-sm font-medium text-gray-700 mb-2">
+                Extracurriculars
+              </label>
               <input
+                id="extracurriculars"
+                name="extracurriculars"
                 type="text"
                 value={formData.extracurriculars}
                 onChange={(e) => setFormData({ ...formData, extracurriculars: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-gray-900 placeholder-gray-400 min-h-[44px]"
                 placeholder="e.g., Debate Club, Volunteer Work, Sports (comma separated)"
+                aria-describedby="extracurriculars-hint"
               />
+              <p id="extracurriculars-hint" className="text-xs text-gray-500 mt-1">Separate multiple activities with commas</p>
             </div>
           </div>
-        </div>
+        </fieldset>
 
         {/* Submit Button */}
-        <div className="flex items-center justify-end gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-4">
           <button
             type="button"
             onClick={() => window.history.back()}
-            className="px-6 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"
+            className="px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition min-h-[44px]"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
           >
-            {saving ? 'Saving...' : 'Save Profile'}
+            {saving ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true"></span>
+                Saving...
+              </span>
+            ) : 'Save Profile'}
           </button>
         </div>
       </form>
