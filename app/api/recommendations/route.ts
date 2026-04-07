@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
 
   // Create a mock request body for GET
   const mockRequest = {
-    json: async () => ({ limit: parseInt(limit), minScore: parseInt(minScore) }),
+    json: async () => ({ limit: parseInt(String(limit)), minScore: parseInt(String(minScore)) }),
   } as NextRequest;
 
   return POST(mockRequest);
