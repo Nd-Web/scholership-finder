@@ -209,7 +209,7 @@ export class MatchingService {
       // Use provided options or fall back to config
       const minScore = options?.minScore ?? config.minScore;
       const limit = options?.limit ?? config.maxResults;
-      const weights = options?.weights
+      const weights: Partial<typeof DEFAULT_WEIGHTS> | undefined = options?.weights
         ? {
             country: options.weights.country ?? config.defaultCriteria.countryWeight,
             fieldOfStudy: options.weights.fieldOfStudy ?? config.defaultCriteria.fieldOfStudyWeight,
