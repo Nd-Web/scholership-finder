@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { Profile, EducationLevel, FinancialNeedLevel } from '@/types';
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -105,8 +107,16 @@ export default function ProfilePage() {
         return;
       }
 
-      setSuccess(true);
       setProfile(data.data);
+
+      // Redirect to dashboard after creating new profile
+      if (method === 'POST') {
+        router.push('/dashboard');
+        return;
+      }
+
+      // Show success message for updates
+      setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
       console.error('Failed to save profile:', error);
