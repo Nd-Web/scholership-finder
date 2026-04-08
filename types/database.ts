@@ -146,6 +146,47 @@ export interface MatchFactor {
 }
 
 // ============================================
+// AGENT TYPES
+// ============================================
+
+export type AgentRunStatus =
+  | 'pending'
+  | 'running'
+  | 'completed'
+  | 'failed'
+  | 'cancelled';
+
+export type AgentTriggerType = 'manual' | 'scheduled';
+
+export type AgentLogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+export interface AgentRun {
+  id: string;
+  trigger_type: AgentTriggerType;
+  search_queries: string[];
+  status: AgentRunStatus;
+  total_found: number;
+  total_processed: number;
+  total_added: number;
+  total_skipped: number;
+  started_at: string | null;
+  completed_at: string | null;
+  error_message: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AgentLog {
+  id: string;
+  run_id: string;
+  level: AgentLogLevel;
+  message: string;
+  context: Record<string, unknown>;
+  created_at: string;
+}
+
+// ============================================
 // DATABASE RESPONSE TYPES
 // ============================================
 

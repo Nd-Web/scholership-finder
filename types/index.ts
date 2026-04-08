@@ -46,3 +46,22 @@ export type {
   MatchingCriteria,
   MatchingConfig,
 } from './api';
+
+// Agent types
+export type {
+  AgentRunStatus,
+  AgentTriggerType,
+  AgentRun,
+  AgentRunCreate,
+  AgentLogLevel,
+  AgentLog,
+  AgentLogCreate,
+  SearchResult,
+  ExtractedScholarship,
+  DuplicateCheckResult,
+  AgentConfig,
+  AgentProgress,
+  AgentRunResult,
+} from './agent';
+
+export { DEFAULT_SEARCH_QUERIES } from './agent';
