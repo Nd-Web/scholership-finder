@@ -217,7 +217,10 @@ function scoreFundingType(profile: Profile, scholarship: Scholarship): number {
 
   // Merit-based for high achievers
   if (fundingType === 'merit_based') {
-    const gpa = profile.gpa || 0;
+    const gpa = profile.gpa;
+    if (gpa === null || gpa === undefined) {
+      return 70; // Neutral when GPA unspecified (common for undergrads/bootcamps)
+    }
     const gpaScale = profile.gpa_scale || 4.0;
     const normalizedGpa = gpa / gpaScale;
 
@@ -240,7 +243,8 @@ function scoreFundingType(profile: Profile, scholarship: Scholarship): number {
     if (targetLevel === 'master' || targetLevel === 'phd') {
       return 85;
     }
-    return 40; // Less relevant for undergrads
+    // Some undergrad research fellowships exist — keep them in results
+    return 55;
   }
 
   return 50; // Default neutral score
@@ -309,12 +313,12 @@ function scoreEducationLevel(profile: Profile, scholarship: Scholarship): number
 
   // Check for level keywords
   const levelKeywords: Record<string, string[]> = {
-    high_school: ['high school', 'highschool', 'secondary school', 'undergraduate'],
-    bachelor: ['bachelor', 'undergraduate', 'bsc', 'ba', 'bachelor\'s'],
-    master: ['master', 'masters', 'msc', 'ma', 'mba', 'graduate'],
-    phd: ['phd', 'doctorate', 'doctoral', 'ph.d'],
-    certificate: ['certificate', 'certification', 'diploma'],
-    diploma: ['diploma', 'certificate'],
+    high_school: ['high school', 'highschool', 'secondary school', 'undergraduate', 'freshman', 'first year', 'a-level', 'gcse'],
+    bachelor: ['bachelor', 'undergraduate', 'undergrad', 'bsc', 'ba', 'bachelor\'s', 'bachelors', 'first degree', 'four-year', '4-year', 'first-year', 'freshman', 'sophomore'],
+    master: ['master', 'masters', 'msc', 'ma', 'mba', 'graduate', 'postgraduate', 'post-graduate'],
+    phd: ['phd', 'doctorate', 'doctoral', 'ph.d', 'research degree'],
+    certificate: ['certificate', 'certification', 'diploma', 'bootcamp', 'boot camp', 'coding bootcamp', 'short course', 'online course', 'mooc', 'nanodegree'],
+    diploma: ['diploma', 'certificate', 'vocational', 'trade school', 'polytechnic', 'community college'],
   };
 
   if (targetLevel && levelKeywords[targetLevel]) {

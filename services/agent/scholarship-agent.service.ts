@@ -26,8 +26,8 @@ type DbClient = SupabaseClient<any>;
 // Configuration defaults
 const DEFAULT_CONFIG: AgentConfig = {
   search_queries: [...DEFAULT_SEARCH_QUERIES],
-  max_results_per_query: 10,
-  min_confidence_score: 0.5,
+  max_results_per_query: 20,
+  min_confidence_score: 0.4,
   skip_duplicates: true,
 };
 

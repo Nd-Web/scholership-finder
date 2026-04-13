@@ -152,21 +152,74 @@ export interface AgentRunResult {
 // ============================================
 
 export const DEFAULT_SEARCH_QUERIES = [
-  'international scholarship opportunities 2026',
-  'fully funded scholarships for international students',
+  // Undergraduate - primary focus
+  'undergraduate scholarships 2026 international students',
+  'fully funded undergraduate scholarships worldwide 2026',
+  'bachelor degree scholarships for international students 2026',
+  'first year undergraduate scholarships no GPA required',
+  'undergraduate scholarships for high school graduates 2026',
+  'need based undergraduate scholarships international',
+  'merit scholarships for undergraduate students 2026',
+  'undergraduate STEM scholarships international students',
+  'undergraduate business scholarships 2026',
+  'undergraduate engineering scholarships worldwide',
+  'undergraduate arts and humanities scholarships 2026',
+  'undergraduate medical and nursing scholarships 2026',
+  'undergraduate scholarships for African students 2026',
+  'undergraduate scholarships for Asian students 2026',
+  'undergraduate scholarships for Latin American students 2026',
+  'undergraduate scholarships for European students 2026',
+  'undergraduate scholarships for Middle East students 2026',
+  'undergraduate scholarships for women 2026',
+  'undergraduate scholarships for minorities 2026',
+  'undergraduate scholarships for refugees 2026',
+  'undergraduate scholarships for disabled students 2026',
+  'undergraduate scholarships for low income families 2026',
+
+  // Bootcamps, institutions, non-traditional
+  'coding bootcamp scholarships 2026',
+  'tech bootcamp scholarships for underrepresented groups 2026',
+  'free coding bootcamps with scholarships 2026',
+  'data science bootcamp scholarships 2026',
+  'cybersecurity bootcamp scholarships 2026',
+  'UX design bootcamp scholarships 2026',
+  'online bootcamp scholarships and income share agreements',
+  'vocational training scholarships 2026',
+  'trade school scholarships international',
+  'certificate program scholarships 2026',
+  'diploma program scholarships international students',
+  'online course scholarships Coursera edX Udacity 2026',
+  'MOOC scholarships and financial aid 2026',
+  'nonprofit institute scholarships for young professionals 2026',
+  'community college scholarships international students',
+  'polytechnic scholarships 2026',
+
+  // Country and school coverage
+  'USA university scholarships for international undergraduates 2026',
+  'UK university undergraduate scholarships 2026',
+  'Canada undergraduate scholarships international 2026',
+  'Australia undergraduate scholarships international 2026',
+  'Germany undergraduate scholarships DAAD 2026',
+  'Netherlands undergraduate scholarships Holland 2026',
+  'France undergraduate scholarships Eiffel 2026',
+  'China undergraduate scholarships CSC 2026',
+  'Japan undergraduate scholarships MEXT 2026',
+  'South Korea undergraduate scholarships KGSP 2026',
+  'Turkey undergraduate scholarships Turkiye Burslari 2026',
+  'Ivy League undergraduate financial aid international students',
+  'top universities undergraduate scholarships worldwide 2026',
+  'all universities undergraduate scholarship list 2026',
+
+  // Graduate (keep coverage)
   'masters scholarship programs 2026',
-  'PhD scholarship opportunities worldwide',
-  'undergraduate scholarships international students',
-  'merit based scholarships 2026',
-  'need based financial aid international students',
-  'STEM scholarships for international students',
-  'scholarships for developing countries 2026',
+  'PhD scholarship opportunities worldwide 2026',
   'research grants and fellowships 2026',
-  'women in STEM scholarship programs',
-  'engineering scholarship opportunities 2026',
-  'business school scholarships international',
-  'medical school scholarships international students',
-  'arts and humanities scholarships 2026'
+  'fully funded scholarships for international students 2026',
+
+  // Aggregators and directories
+  'scholarship database undergraduate 2026',
+  'scholarship aggregator site undergraduate bootcamp',
+  'list of open scholarships 2026'
 ] as const;
 
 export type DefaultSearchQuery = typeof DEFAULT_SEARCH_QUERIES[number];

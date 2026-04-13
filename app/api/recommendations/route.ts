@@ -35,8 +35,8 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body = await request.json();
-    const limit = body?.limit || 20;
-    const minScore = body?.minScore || 40;
+    const limit = body?.limit || 50;
+    const minScore = body?.minScore ?? 30;
 
     // Fetch user profile
     const { data: profile, error: profileError } = await supabase
@@ -117,8 +117,8 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   // Redirect to POST with default parameters
   const searchParams = request.nextUrl.searchParams;
-  const limit = searchParams.get('limit') || 20;
-  const minScore = searchParams.get('minScore') || 40;
+  const limit = searchParams.get('limit') || 50;
+  const minScore = searchParams.get('minScore') || 30;
 
   // Create a mock request body for GET
   const mockRequest = {

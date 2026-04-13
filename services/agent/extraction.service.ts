@@ -18,6 +18,9 @@ IMPORTANT RULES:
 4. Dates should be in YYYY-MM-DD format when possible
 5. For funding_amount, extract the numeric value (e.g., 50000, not "$50,000")
 6. Be conservative - if unsure, set confidence_score lower
+7. Extract opportunities from ALL education providers: universities, colleges, community colleges, polytechnics, coding/tech bootcamps, vocational/trade schools, online learning platforms (MOOCs), nonprofits, and training institutes.
+8. Undergraduate-level opportunities are a priority. Do NOT skip scholarships that omit GPA — min_gpa should simply be null when unspecified.
+9. In eligibility_criteria, record the target provider type (e.g., "bootcamp", "community college", "online program") and the education level ("undergraduate", "bachelor", "certificate", "diploma") when stated or strongly implied.
 
 OUTPUT SCHEMA (JSON):
 {

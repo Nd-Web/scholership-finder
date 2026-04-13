@@ -299,7 +299,7 @@ export default function ProfilePage() {
             </div>
             <div>
               <label htmlFor="gpa" className="block text-sm font-medium text-gray-700 mb-2">
-                GPA
+                GPA / CGPA <span className="text-gray-400 font-normal">(optional)</span>
               </label>
               <div className="flex gap-2">
                 <input
@@ -327,7 +327,7 @@ export default function ProfilePage() {
                   <option value="5.0">/ 5.0</option>
                 </select>
               </div>
-              <p id="gpa-hint" className="text-xs text-gray-500 mt-1">Enter your GPA on the selected scale</p>
+              <p id="gpa-hint" className="text-xs text-gray-500 mt-1">Leave blank if you don&apos;t have one yet — many undergraduate scholarships don&apos;t require a GPA.</p>
             </div>
           </div>
         </fieldset>

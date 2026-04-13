@@ -191,6 +191,28 @@ export default function ScholarshipsPage() {
           >
             {filters.degreeLevel === 'Graduate' ? '✓ ' : ''}Graduate
           </button>
+          <button
+            onClick={() => handleFilterChange('degreeLevel', filters.degreeLevel === 'bootcamp' ? '' : 'bootcamp')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition min-h-[44px] ${
+              filters.degreeLevel === 'bootcamp'
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+            aria-pressed={filters.degreeLevel === 'bootcamp'}
+          >
+            {filters.degreeLevel === 'bootcamp' ? '✓ ' : ''}Bootcamp
+          </button>
+          <button
+            onClick={() => handleFilterChange('degreeLevel', filters.degreeLevel === 'certificate' ? '' : 'certificate')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition min-h-[44px] ${
+              filters.degreeLevel === 'certificate'
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+            aria-pressed={filters.degreeLevel === 'certificate'}
+          >
+            {filters.degreeLevel === 'certificate' ? '✓ ' : ''}Certificate / Diploma
+          </button>
         </div>
 
         {/* Advanced Filters (Collapsible) */}
