@@ -144,6 +144,10 @@ export default function ProfilePage() {
         </p>
       </header>
 
+      {/* Completion Meter — only the high-signal fields that move the matching
+          needle. GPA is deliberately omitted so undergrads aren't penalized. */}
+      <ProfileCompletionMeter formData={formData} />
+
       {/* Success Message */}
       {success && (
         <div
@@ -465,5 +469,67 @@ export default function ProfilePage() {
         </div>
       </form>
     </div>
+  );
+}
+
+type CompletionField = {
+  key: string;
+  label: string;
+  filled: boolean;
+};
+
+function ProfileCompletionMeter({ formData }: { formData: Record<string, string> }) {
+  const fields: CompletionField[] = [
+    { key: 'firstName', label: 'First name', filled: !!formData.firstName?.trim() },
+    { key: 'lastName', label: 'Last name', filled: !!formData.lastName?.trim() },
+    { key: 'nationality', label: 'Nationality', filled: !!formData.nationality?.trim() },
+    { key: 'countryOfResidence', label: 'Country of residence', filled: !!formData.countryOfResidence?.trim() },
+    { key: 'fieldOfStudy', label: 'Field of study', filled: !!formData.fieldOfStudy?.trim() },
+    { key: 'targetEducationLevel', label: 'Target education level', filled: !!formData.targetEducationLevel },
+    { key: 'preferredStudyCountries', label: 'Preferred study countries', filled: !!formData.preferredStudyCountries?.trim() },
+    { key: 'preferredStudyFields', label: 'Preferred study fields', filled: !!formData.preferredStudyFields?.trim() },
+    { key: 'financialNeed', label: 'Financial need', filled: !!formData.financialNeed },
+    { key: 'bio', label: 'Short bio', filled: !!formData.bio?.trim() },
+  ];
+
+  const filledCount = fields.filter((f) => f.filled).length;
+  const percent = Math.round((filledCount / fields.length) * 100);
+  const missing = fields.filter((f) => !f.filled).slice(0, 3);
+
+  const barColor = percent >= 80 ? 'bg-green-600' : percent >= 50 ? 'bg-blue-600' : 'bg-yellow-500';
+
+  return (
+    <section
+      className="mb-6 p-4 bg-white rounded-xl border border-gray-200"
+      aria-labelledby="profile-completion-heading"
+    >
+      <div className="flex items-baseline justify-between mb-2">
+        <h2 id="profile-completion-heading" className="text-sm font-semibold text-gray-900">
+          Profile completeness
+        </h2>
+        <span className="text-sm font-medium text-gray-700">{percent}%</span>
+      </div>
+      <div
+        className="w-full h-2 bg-gray-200 rounded-full overflow-hidden"
+        role="progressbar"
+        aria-valuenow={percent}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <div className={`h-full ${barColor} transition-all`} style={{ width: `${percent}%` }} />
+      </div>
+      {missing.length > 0 && (
+        <p className="text-xs text-gray-600 mt-2">
+          A more complete profile means better matches. Consider adding:{' '}
+          <span className="font-medium text-gray-800">
+            {missing.map((f) => f.label).join(', ')}
+          </span>
+          .
+        </p>
+      )}
+      {percent === 100 && (
+        <p className="text-xs text-green-700 mt-2">Great — your profile is complete.</p>
+      )}
+    </section>
   );
 }
