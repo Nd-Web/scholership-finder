@@ -9,6 +9,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { scholarshipService } from '@/services';
 import type { ApiResponse, ScholarshipFilters, ScholarshipQueryParams } from '@/types';
 
+// Revalidate the route's response every 5 minutes. Scholarship data changes
+// at most a few times per day (via the agent cron), so stale-while-revalidate
+// is a cheap win that cuts DB load on popular filter combinations.
+export const revalidate = 300;
+
 // ============================================
 // GET /api/scholarships
 // ============================================
@@ -93,6 +98,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json<ApiResponse>({
       success: true,
       data: result.data,
+    }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
+      },
     });
   } catch (error) {
     console.error('Scholarships GET error:', error);
