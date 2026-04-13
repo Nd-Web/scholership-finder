@@ -69,6 +69,8 @@ export class ApplicationService {
           status: validatedData.status,
           notes: validatedData.notes,
           documents_submitted: validatedData.documentsSubmitted,
+          match_score: data.matchScore ?? null,
+          match_explanation: data.matchExplanation ?? null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })

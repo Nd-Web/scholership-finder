@@ -148,6 +148,8 @@ export interface RecommendationsResponse {
 export interface CreateApplicationRequest {
   scholarshipId: string;
   notes?: string;
+  matchScore?: number;
+  matchExplanation?: unknown;
 }
 
 export interface UpdateApplicationRequest {

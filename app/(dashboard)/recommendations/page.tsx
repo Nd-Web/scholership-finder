@@ -41,13 +41,21 @@ export default function RecommendationsPage() {
     }
   };
 
-  const handleTrackApplication = async (scholarshipId: string, e: React.MouseEvent) => {
+  const handleTrackApplication = async (
+    scholarshipId: string,
+    e: React.MouseEvent,
+    matchPayload?: { score: number; explanation: unknown }
+  ) => {
     e.stopPropagation();
     try {
       const response = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ scholarshipId }),
+        body: JSON.stringify({
+          scholarshipId,
+          matchScore: matchPayload?.score,
+          matchExplanation: matchPayload?.explanation,
+        }),
       });
 
       const data = await response.json();
@@ -202,7 +210,7 @@ export default function RecommendationsPage() {
                     Why this match?
                   </button>
                   <button
-                    onClick={(e) => handleTrackApplication(match.scholarship.id, e)}
+                    onClick={(e) => handleTrackApplication(match.scholarship.id, e, { score: match.score, explanation: match.explanation })}
                     className="px-4 py-3 sm:py-2 bg-blue-600 text-white text-sm rounded-lg font-medium hover:bg-blue-700 transition min-h-[44px] sm:min-h-0"
                   >
                     Track Application
