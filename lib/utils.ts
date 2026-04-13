@@ -63,6 +63,15 @@ export function isDeadlinePassed(deadline: string | null): boolean {
 }
 
 /**
+ * Checks if a deadline is within the next 7 days (urgent).
+ */
+export function isDeadlineThisWeek(deadline: string | null): boolean {
+  if (!deadline) return false;
+  const daysLeft = daysBetween(new Date().toISOString(), deadline);
+  return daysLeft >= 0 && daysLeft <= 7;
+}
+
+/**
  * Formats a GPA with its scale.
  */
 export function formatGpa(gpa: number | null, scale: number = 4.0): string {

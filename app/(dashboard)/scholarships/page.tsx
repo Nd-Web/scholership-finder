@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { Scholarship } from '@/types';
-import { isDeadlineApproaching, isDeadlinePassed } from '@/lib/utils';
+import { isDeadlineApproaching, isDeadlinePassed, isDeadlineThisWeek } from '@/lib/utils';
 
 interface Filters {
   search: string;
@@ -27,7 +27,7 @@ export default function ScholarshipsPage() {
     fundingType: '',
     minGpa: '',
     degreeLevel: '',
-    onlyOpen: false,
+    onlyOpen: true,
   });
 
   const limit = 10;
@@ -74,7 +74,7 @@ export default function ScholarshipsPage() {
       fundingType: '',
       minGpa: '',
       degreeLevel: '',
-      onlyOpen: false,
+      onlyOpen: true,
     });
   };
 
@@ -341,6 +341,7 @@ function ScholarshipCard({ scholarship }: { scholarship: Scholarship }) {
   const [expanded, setExpanded] = useState(false);
   const deadlinePassed = isDeadlinePassed(scholarship.deadline);
   const deadlineApproaching = isDeadlineApproaching(scholarship.deadline);
+  const deadlineThisWeek = isDeadlineThisWeek(scholarship.deadline);
 
   const handleTrackApplication = async () => {
     try {
@@ -376,7 +377,12 @@ function ScholarshipCard({ scholarship }: { scholarship: Scholarship }) {
               Deadline Passed
             </span>
           )}
-          {deadlineApproaching && !deadlinePassed && (
+          {deadlineThisWeek && !deadlinePassed && (
+            <span className="px-2.5 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full animate-pulse">
+              Closing This Week
+            </span>
+          )}
+          {deadlineApproaching && !deadlineThisWeek && !deadlinePassed && (
             <span className="px-2.5 py-1 bg-yellow-50 text-yellow-700 text-xs font-medium rounded-full">
               Deadline Soon
             </span>
