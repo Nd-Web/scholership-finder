@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/scholarship-agent",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/expire-stale",
+      "schedule": "0 3 * * *"
     }
   ]
 }
