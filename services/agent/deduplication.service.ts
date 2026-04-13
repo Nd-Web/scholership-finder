@@ -9,7 +9,7 @@ import type { ExtractedScholarship, DuplicateCheckResult } from '@/types/agent';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 // Similarity threshold for fuzzy matching (0-1)
-const TITLE_SIMILARITY_THRESHOLD = 0.85;
+const TITLE_SIMILARITY_THRESHOLD = 0.82;
 
 /**
  * Check if a scholarship already exists in the database
@@ -54,11 +54,19 @@ export async function checkForDuplicate(
     }
   }
 
-  // Check by title and provider similarity
+  // Check by title and provider similarity. Query by BOTH a title fragment and
+  // the provider name so reordered titles ("2026 Chevening" vs "Chevening 2026")
+  // still surface candidates.
+  const normalizedTitle = normalizeString(scholarship.title);
+  const titleTokens = normalizedTitle.split(' ').filter((t) => t.length > 3);
+  const titleKey = titleTokens.slice(0, 3).join(' ') || scholarship.title.slice(0, 30);
+
   const { data: existingScholarships } = await supabase
     .from('scholarships')
     .select('id, title, provider_name')
-    .ilike('title', `%${scholarship.title.slice(0, 50)}%`);
+    .or(
+      `title.ilike.%${titleKey}%,provider_name.ilike.%${scholarship.provider_name.slice(0, 40)}%`
+    );
 
   if (existingScholarships && existingScholarships.length > 0) {
     for (const existing of existingScholarships) {
@@ -162,7 +170,24 @@ export async function filterDuplicates(
   const unique: ExtractedScholarship[] = [];
   const duplicates: Array<{ scholarship: ExtractedScholarship; reason: string }> = [];
 
+  // Intra-batch dedup: the same scholarship can appear under different source
+  // URLs (blogs, aggregators). Collapse them before hitting the DB.
+  const seenKeys: Array<{ key: string; scholarship: ExtractedScholarship }> = [];
+
   for (const scholarship of scholarships) {
+    const key = normalizeString(`${scholarship.title} ${scholarship.provider_name}`);
+
+    const intraBatchMatch = seenKeys.find(
+      (s) => calculateSimilarity(s.key, key) >= TITLE_SIMILARITY_THRESHOLD
+    );
+    if (intraBatchMatch) {
+      duplicates.push({
+        scholarship,
+        reason: 'Matched another scholarship in the same batch',
+      });
+      continue;
+    }
+
     const result = await checkForDuplicate(scholarship, supabase);
 
     if (result.is_duplicate) {
@@ -171,6 +196,7 @@ export async function filterDuplicates(
         reason: `Matched by ${result.match_reason} (score: ${result.similarity_score?.toFixed(2)})`,
       });
     } else {
+      seenKeys.push({ key, scholarship });
       unique.push(scholarship);
     }
   }
