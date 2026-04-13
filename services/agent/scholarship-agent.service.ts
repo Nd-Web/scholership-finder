@@ -103,6 +103,29 @@ async function logAgentAction(
 }
 
 /**
+ * Check that a URL responds successfully. Uses HEAD with a short timeout so
+ * the agent run doesn't stall on slow sites. Falls back to GET because some
+ * servers (e.g. Cloudflare-protected) reject HEAD with 403/405.
+ */
+async function isUrlReachable(url: string): Promise<boolean> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const head = await fetch(url, { method: 'HEAD', signal: controller.signal, redirect: 'follow' });
+    if (head.ok) return true;
+    if (head.status === 405 || head.status === 403) {
+      const get = await fetch(url, { method: 'GET', signal: controller.signal, redirect: 'follow' });
+      return get.ok;
+    }
+    return false;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
  * Store a scholarship in the database
  */
 async function storeScholarship(
@@ -292,11 +315,25 @@ export async function runScholarshipAgent(
       duplicates: duplicates.length,
     }, supabase);
 
-    // Step 4: Store new scholarships
+    // Step 4: Store new scholarships (verify application URL first)
     let addedCount = 0;
+    let skippedUnreachable = 0;
     const errors: string[] = [];
 
     for (const scholarship of unique) {
+      const urlToCheck = scholarship.application_url || scholarship.website_url;
+      if (urlToCheck) {
+        const reachable = await isUrlReachable(urlToCheck);
+        if (!reachable) {
+          skippedUnreachable++;
+          await logAgentAction(runId, 'warn', 'Skipping scholarship — URL unreachable', {
+            title: scholarship.title,
+            url: urlToCheck,
+          }, supabase);
+          continue;
+        }
+      }
+
       const result = await storeScholarship(scholarship, runId, supabase);
 
       if (result.success) {
